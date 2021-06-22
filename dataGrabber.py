@@ -27,10 +27,10 @@ def retrieve_access_token(grant_type, username, password):
     response = requests.request("POST", url, data=payload, headers=headers)
     dt = datetime.datetime.now()
     if response.status_code == 200:
-        print(f'{dt} [log]   access token successfully')
+        print(f'{dt} [log]   retrieve access token successfully')
         return response.json()['access_token']
     else:
-        print(f'{dt} [error] access token failed. response code: {response.status_code}')
+        print(f'{dt} [error] retrieve access token failed. response code: {response.status_code}')
         return False
 retrieve_access_token.__doc__ = "API for retrieving access token"
 
@@ -71,7 +71,9 @@ def to_csv(output_dir, dict_object, csv_name):
     dt = datetime.datetime.now()
     print(f'{dt} [log]   save to {csv_name}.csv successfully')
 
-def send_email(subject, body, sender_email, receiver_email, email_password, filename):
+    return csv_name
+
+def send_email(subject, body, sender_email, receiver_email, email_password, stmp, stmp_port, filename):
     # Create a multipart message and set headers
     message = MIMEMultipart()
     message["From"] = sender_email
@@ -104,9 +106,12 @@ def send_email(subject, body, sender_email, receiver_email, email_password, file
 
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.exmail.qq.com", 465, context=context) as server:
+    with smtplib.SMTP_SSL(stmp, stmp_port, context=context) as server:
         server.login(sender_email, email_password)
         server.sendmail(sender_email, receiver_email, text)
+
+    dt = datetime.datetime.now()
+    print(f'{dt} [log]   sent email to {receiver_email} successfully')
 
 def _get_parser():
     parser = argparse.ArgumentParser(description='Automate data grabber from HKTVmall mms portal')
@@ -114,20 +119,14 @@ def _get_parser():
     return parser
 
 def main(config):
-    username = config['username']
-    password = config['password']
-    merchant_code = config['merchant_code']
+    access_token = retrieve_access_token('password', config['username'], config['password'])
 
-
-    access_token = retrieve_access_token('password', username, password)
     if access_token:
-        merchant_product = merchant_product_api(access_token, "1", "0", username, merchant_code, "H6842001")
+        merchant_product = merchant_product_api(access_token, "1", "0", config['username'], config['merchant_code'], "H6842001")
         if merchant_product:
             td = datetime.date.today().strftime("%d%m%Y")
-            to_csv(config['output_dir'] ,merchant_product, f'merchant_product_{td}')
-            print("sending email")
-            send_email(config['subject'], config['body'], config['sender_email'], config['receiver_email'], config['email_password'], './data/merchant_product_21062021.csv')
-            print("sent")
+            csv_name = to_csv(config['output_dir'] ,merchant_product, f'merchant_product_{td}')
+            send_email(config['subject'], config['body'], config['sender_email'], config['receiver_email'], config['email_password'], config['stmp'], config['stmp_port'], f'{config["output_dir"]}{csv_name}.csv')
 
 
 if __name__ == "__main__":
