@@ -1,0 +1,11 @@
+{
+    "username": "is@doubleh.com.hk",
+    "password": "Qwer5678",
+    "merchant_code": "034875fe-508e-4a4b-8cca-b713321fb182",
+    "output_dir": "./data/",
+    "subject": "[Auto]Daily report from HKTVmall mms portal data grabber",
+    "body": "This is an automate email sent from server on ",
+    "sender_email": "michael@terminus.com.hk",
+    "receiver_email": "a03036yen@yahoo.com.hk",
+    "email_password": "M2i2c2"
+}
