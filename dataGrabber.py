@@ -8,13 +8,8 @@ import pandas as pd
 import datetime
 import json
 import argparse
-import os
-import email, smtplib, ssl
 
-from email import encoders
-from email.mime.base import MIMEBase
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+from utils import dict_to_dataFrame, add_columns_between_two_dataFrames, dataFrame_to_csv, download_by_url, zip_file, send_email
 
 
 def retrieve_access_token(grant_type, username, password):
@@ -32,10 +27,35 @@ def retrieve_access_token(grant_type, username, password):
     else:
         print(f'{dt} [error] retrieve access token failed. response code: {response.status_code}')
         return False
-retrieve_access_token.__doc__ = "API for retrieving access token"
 
-def merchant_product_api(access_token, sys_take, sys_skip, sys_email, sys_token, sys_store_code, snapshot_date = ""):
-    url = "https://opendatabank-apigw.hktvmall.com/gw/api/v1/MerchantProduct"
+def public_sales_api(url, access_token, sys_start_date, sys_end_date):
+    url = url + "/gw/api/v1/PublicSaleTransaction/fileUrls"
+    headers = {
+        'Content-Type': "application/json",
+        'Authorization': f'Bearer {access_token}',
+        'cache-control': "no-cache"
+        }
+    payload = {
+        "sys_start_date": sys_start_date, 
+        "sys_end_date": sys_end_date, 
+        }
+    json_payload = json.dumps(payload)
+    response = requests.request("POST", url, data=json_payload, headers=headers)
+    dt = datetime.datetime.now()
+    if response.status_code == 200:
+        print(f'{dt} [log]   get public sales successfully')
+        return response.json()['presigned_url']
+    else:
+        print(f'{dt} [error] get public sales failed. response code: {response.status_code}')
+        return False
+
+def merchant_product_api(url, access_token, sys_take, sys_skip, sys_email, sys_token, sys_store_code, snapshot_date = ""):
+    url = url + "/gw/api/v1/MerchantProduct"
+    headers = {
+        'Content-Type': "application/json",
+        'Authorization': f'Bearer {access_token}',
+        'cache-control': "no-cache"
+        }
     payload = {
         "sys_take": sys_take, 
         "sys_skip": sys_skip, 
@@ -45,11 +65,6 @@ def merchant_product_api(access_token, sys_take, sys_skip, sys_email, sys_token,
         #'snapshot_date': snapshot_date
         }
     json_payload = json.dumps(payload)  
-    headers = {
-        'Content-Type': "application/json",
-        'Authorization': f'Bearer {access_token}',
-        'cache-control': "no-cache"
-        }
     
     response = requests.request("POST", url, data=json_payload, headers=headers)
     dt = datetime.datetime.now()
@@ -60,74 +75,30 @@ def merchant_product_api(access_token, sys_take, sys_skip, sys_email, sys_token,
         print(f'{dt} [error] get merchant product failed. response code: {response.status_code}')
         return False
 
-
-def to_csv(output_dir, dict_object, csv_name):
-    data_df = pd.DataFrame.from_dict(dict_object, orient='index').T
-    os.makedirs(output_dir, exist_ok=True)
-    if output_dir[-1] == '/':
-        data_df.to_csv(f'{output_dir}{csv_name}.csv', index=True)
-    else:
-        data_df.to_csv(f'{output_dir}/{csv_name}.csv', index=True)
-    dt = datetime.datetime.now()
-    print(f'{dt} [log]   save to {csv_name}.csv successfully')
-
-    return csv_name
-
-def send_email(subject, body, sender_email, receiver_email, email_password, stmp, stmp_port, filename):
-    # Create a multipart message and set headers
-    message = MIMEMultipart()
-    message["From"] = sender_email
-    message["To"] = receiver_email
-    message["Subject"] = subject
-    #message["Bcc"] = receiver_email
-
-    # Add body to email
-    message.attach(MIMEText(body, "plain"))
-
-    # Open PDF file in binary mode
-    with open(f"{filename}", "rb") as attachment:
-        # Add file as application/octet-stream
-        # Email client can usually download this automatically as attachment
-        part = MIMEBase("application", "octet-stream")
-        part.set_payload(attachment.read())
-
-    # Encode file in ASCII characters to send by email    
-    encoders.encode_base64(part)
-
-    # Add header as key/value pair to attachment part
-    part.add_header(
-        "Content-Disposition",
-        f"attachment; filename= {filename}",
-    )
-
-    # Add attachment to message and convert message to string
-    message.attach(part)
-    text = message.as_string()
-
-    # Log in to server using secure context and send email
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(stmp, stmp_port, context=context) as server:
-        server.login(sender_email, email_password)
-        server.sendmail(sender_email, receiver_email, text)
-
-    dt = datetime.datetime.now()
-    print(f'{dt} [log]   sent email to {receiver_email} successfully')
-
 def _get_parser():
     parser = argparse.ArgumentParser(description='Automate data grabber from HKTVmall mms portal')
     parser.add_argument('--config', help='config file path')
     return parser
 
-def main(config):
-    access_token = retrieve_access_token('password', config['username'], config['password'])
+def main(args):
+    td = datetime.date.today()
+    ytd = td - datetime.timedelta(days=1)
+    dl_filename = f'[ori]Public_Transaction_{ytd.strftime("%d%m%Y")}_{td.strftime("%d%m%Y")}.csv'
+    save_filename = f'Public_Transaction_{ytd.strftime("%d%m%Y")}_{td.strftime("%d%m%Y")}.csv'
+    public_sales_output_dir = f'{args["output_dir"]}/public sales/{ytd}-{td}'
 
-    if access_token:
-        merchant_product = merchant_product_api(access_token, "1", "0", config['username'], config['merchant_code'], "H6842001")
-        if merchant_product:
-            td = datetime.date.today().strftime("%d%m%Y")
-            csv_name = to_csv(config['output_dir'] ,merchant_product, f'merchant_product_{td}')
-            send_email(config['subject'], config['body'], config['sender_email'], config['receiver_email'], config['email_password'], config['stmp'], config['stmp_port'], f'{config["output_dir"]}{csv_name}.csv')
-
+    access_token = retrieve_access_token('password', args['username'], args['password'])
+    if access_token:   
+        public_sales_link = public_sales_api(args['url'], access_token, ytd.strftime("%Y-%m-%d"), td.strftime("%Y-%m-%d"))  #"2021-06-23", "2021-06-24" for testing
+        if public_sales_link:
+            csv_gz_path = download_by_url(public_sales_link, public_sales_output_dir, f'{dl_filename}.gz')
+            if csv_gz_path:
+                download_dataFrame = pd.read_csv(csv_gz_path, compression='gzip', error_bad_lines=False)
+                column_name_array = ['membership_level', 'device_type', 'card_type', 'housing_type', 'order_value', 'total_discounts', 'sku_id', 'sku_name_chi', 'brand_chi', 'quantity', 'unit_price', 'primary_category', 'primary_category_name_chi', 'sub_cat_1_name_chi', 'sub_cat_2_name_chi', 'sub_cat_3_name_chi', 'order_sku_comm_rate', 'order_sku_comm_amount', 'sku_level_promotion_amount']
+                df = add_columns_between_two_dataFrames(download_dataFrame, column_name_array)
+                dataFrame_to_csv(df, public_sales_output_dir, save_filename)
+                zip_file(f'{public_sales_output_dir}/{save_filename}', f'{public_sales_output_dir}/{save_filename}.zip')
+                send_email(args['subject'], args['body'], args['sender_email'], args['receiver_email'], args['email_password'], args['stmp'], args['stmp_port'], f'{public_sales_output_dir}/{save_filename}.zip')
 
 if __name__ == "__main__":
     parser = _get_parser()
