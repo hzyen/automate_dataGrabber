@@ -1,11 +1,11 @@
-import datetime
 import os
-import email, smtplib, ssl
+import smtplib, ssl
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import zipfile
+import logging
 
 import pandas as pd
 import wget
@@ -17,8 +17,6 @@ def dict_to_dataFrame(dict_object):
 def dataFrame_to_csv(df, output_dir, csv_name):
     os.makedirs(output_dir, exist_ok=True)
     df.to_csv(f'{output_dir}/{csv_name}', index=True)
-    dt = datetime.datetime.now()
-    print(f'{dt} [log]   save to {csv_name} successfully')
     return csv_name
 
 def add_columns_between_two_dataFrames(original_dataFrame, column_name_array):
@@ -28,25 +26,20 @@ def add_columns_between_two_dataFrames(original_dataFrame, column_name_array):
             destination_dataFrame[column_name] = original_dataFrame[column_name]
     return destination_dataFrame
 
-def zip_file(file, output_filename):
+def zip_file(files, output_filename):
     f = zipfile.ZipFile(output_filename, 'w', zipfile.ZIP_DEFLATED)
-    f.write(file)
+    for file in files:
+        f.write(file)
     f.close()
 
 def download_by_url(link, output_dir, filename):
     try:
-        dt = datetime.datetime.now()
         path = f'{output_dir}/{filename}'
-        print(f'{dt} [log]   Downloading files')
         os.makedirs(output_dir, exist_ok=True)
         if not os.path.exists(path):
             wget.download(link, path)
-        dt = datetime.datetime.now()
-        print(f'{dt} [log]   Downloaded successfully')
         return path
     except Exception as e:
-        dt = datetime.datetime.now()
-        print(f'{dt} [error] Download failed...')
         return False
 
 def send_email(subject, body, sender_email, receiver_email, email_password, stmp, stmp_port, filename):
@@ -86,5 +79,22 @@ def send_email(subject, body, sender_email, receiver_email, email_password, stmp
         server.login(sender_email, email_password)
         server.sendmail(sender_email, receiver_email, text)
 
-    dt = datetime.datetime.now()
-    print(f'{dt} [log]   sent email to {receiver_email} successfully')
+def create_logger(log_folder, filename, dir_path):
+    logging.captureWarnings(True) #capture python warning message
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    my_logger = logging.getLogger('py.warnings') # capture python warning message
+    my_logger.setLevel(logging.INFO)
+
+    if not os.path.exists(dir_path + '/' + log_folder):
+        os.makedirs(dir_path + '/' + log_folder)
+
+    fileHandler = logging.FileHandler(dir_path + '/' + log_folder + '/' + filename, 'w', 'utf-8')
+    fileHandler.setFormatter(formatter)
+    my_logger.addHandler(fileHandler)
+
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setLevel(logging.DEBUG)
+    consoleHandler.setFormatter(formatter)
+    my_logger.addHandler(consoleHandler)
+
+    return my_logger
