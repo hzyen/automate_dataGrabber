@@ -84,7 +84,12 @@ def main(args, logger):
     zip_files = []
     zipFile_dir = f'{output_dir}.zip'
 
-    access_token = retrieve_access_token('password', args['username'], args['password'])
+    username = args['is_username']
+    password = args['is_password']
+    sys_token = args['is_merchant_code']
+    sys_store_code = args['is_store_code']
+
+    access_token = retrieve_access_token('password', username, password)
     if access_token:
 
         # Get public sales data
@@ -100,9 +105,9 @@ def main(args, logger):
  
         # Get merchant user data
         payload = {
-            'sys_email': args['username'],
-            'sys_token': args['merchant_code'],
-            'sys_store_code': args['store_code'],
+            'sys_email': username,
+            'sys_token': sys_token,
+            'sys_store_code': sys_store_code,
         }
         url = args['url'] + '/gw/api/v1/MerchantUser'
         api_name = 'Merchant_User'
@@ -113,9 +118,9 @@ def main(args, logger):
 
         # Get merchant website and app traffic product data
         payload = {
-            'sys_email': args['username'],
-            'sys_token': args['merchant_code'],
-            'sys_store_code': args['store_code'],
+            'sys_email': username,
+            'sys_token': sys_token,
+            'sys_store_code': sys_store_code,
             'date': ytd.strftime("%Y-%m-%d")
         }
         url = args['url'] + '/gw/api/v1/MerchantTrafficProduct'
@@ -127,9 +132,9 @@ def main(args, logger):
 
         # Get merchant website and app traffic product list data
         payload = {
-            'sys_email': args['username'],
-            'sys_token': args['merchant_code'],
-            'sys_store_code': args['store_code'],
+            'sys_email': username,
+            'sys_token': sys_token,
+            'sys_store_code': sys_store_code,
             'date': ytd.strftime("%Y-%m-%d")
         }
         url = args['url'] + '/gw/api/v1/MerchantTrafficProductList'
@@ -141,9 +146,9 @@ def main(args, logger):
 
         # Get Merchant Product
         payload = {
-            'sys_email': args['username'],
-            'sys_token': args['merchant_code'],
-            'sys_store_code': args['store_code']
+            'sys_email': username,
+            'sys_token': sys_token,
+            'sys_store_code': sys_store_code
         }
         url = args['url'] + '/gw/api/v1/MerchantProduct'
         api_name = 'Merchant_Product'
@@ -154,9 +159,9 @@ def main(args, logger):
        
         # Get Merchant Transaction
         payload = {
-            'sys_email': args['username'],
-            'sys_token': args['merchant_code'],
-            'sys_store_code': args['store_code']
+            'sys_email': username,
+            'sys_token': sys_token,
+            'sys_store_code': sys_store_code
         }
         url = args['url'] + '/gw/api/v1/MerchantSaleTransactionSimplified'
         api_name = 'Merchant_Sale_Transaction_Simplified'
@@ -167,9 +172,9 @@ def main(args, logger):
         
         # Get Merchant Wishlist
         payload = {
-            'sys_email': args['username'],
-            'sys_token': args['merchant_code'],
-            'sys_store_code': args['store_code']
+            'sys_email': username,
+            'sys_token': sys_token,
+            'sys_store_code': sys_store_code
         }
         url = args['url'] + '/gw/api/v1/MerchantWishlistItem'
         api_name = 'Merchant_WishlistItem'
@@ -180,9 +185,9 @@ def main(args, logger):
         
         # Get Merchant Shared Shopping Carts
         payload = {
-            'sys_email': args['username'],
-            'sys_token': args['merchant_code'],
-            'sys_store_code': args['store_code']
+            'sys_email': username,
+            'sys_token': sys_token,
+            'sys_store_code': sys_store_code
         }
         url = args['url'] + '/gw/api/v1/MerchantSharedCartEntry'
         api_name = 'Merchant_SharedCartEntry'
@@ -193,9 +198,9 @@ def main(args, logger):
         
         # Get Merchant Online Stores
         payload = {
-            'sys_email': args['username'],
-            'sys_token': args['merchant_code'],
-            'sys_store_code': args['store_code']
+            'sys_email': username,
+            'sys_token': sys_token,
+            'sys_store_code': sys_store_code
         }
         url = args['url'] + '/gw/api/v1/MerchantOnlineStore'
         api_name = 'Merchant_OnlineStore'
