@@ -82,12 +82,12 @@ def main(args, logger):
     save_filename_1 = f'{ytd.strftime("%d%m%Y")}'
     output_dir = f'{args["output_dir"]}/{ytd}-{td}'
     zip_files = []
-    zipFile_dir = f'{output_dir}.zip'
+    zipFile_dir = f'{output_dir}/{ytd}-{td}.zip'
 
-    username = args['is_username']
-    password = args['is_password']
-    sys_token = args['is_merchant_code']
-    sys_store_code = args['is_store_code']
+    username = args['username']
+    password = args['password']
+    sys_token = args['merchant_code']
+    sys_store_code = args['store_code'][0]
 
     access_token = retrieve_access_token('password', username, password)
     if access_token:
@@ -209,11 +209,12 @@ def main(args, logger):
             dataFrame_to_csv(data, output_dir, f'{api_name}_{save_filename_1}.csv')
             zip_files.append(f'{output_dir}/{api_name}_{save_filename_1}.csv')
 
-        zip_file(zip_files, zipFile_dir)
-        logger.info('zipped files')
-        logger.info(f'sending email to {args["receiver_email"]} from {args["sender_email"]}...')
-        send_email(args['subject'], args['body'], args['sender_email'], args['receiver_email'], args['email_password'], args['stmp'], args['stmp_port'], zipFile_dir)
-        logger.info(f'email sent')
+        if os.path.exists(output_dir):
+            zip_file(zip_files, zipFile_dir)
+            logger.info('zipped files')
+            logger.info(f'sending email to {args["receiver_email"]} from {args["sender_email"]}...')
+            send_email(args['subject'], args['body'], args['sender_email'], args['receiver_email'], args['email_password'], args['stmp'], args['stmp_port'], zipFile_dir)
+            logger.info(f'email sent')
 
 if __name__ == "__main__":
     parser = _get_parser()
