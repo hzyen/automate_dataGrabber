@@ -1,8 +1,8 @@
 {
-    "username": "issac@terminus.com.hk",
-    "password": "Abcd8888",
-    "merchant_code": "1adc7045-9674-4356-9248-3d0757eae7cd",
-    "store_code": ["H8605001"],
+    "username": "is@doubleh.com.hk",
+    "password": "Qwer5678",
+    "merchant_code": "034875fe-508e-4a4b-8cca-b713321fb182",
+    "store_code": ["H6842001"],
     "issac_username": "issac@terminus.com.hk",
     "issac_password": "Abcd8888",
     "issac_merchant_code": "1adc7045-9674-4356-9248-3d0757eae7cd",
@@ -20,5 +20,9 @@
     "receiver_email": "ling.chu@doubleh.com.hk",
     "email_password": "M2i2c2",
     "stmp": "smtp.exmail.qq.com",
-    "stmp_port": 465
+    "stmp_port": 465,
+    "ftp_host": "d.wal.ltd",
+    "ftp_user": "UD",
+    "ftp_password": "U678D876",
+    "ftp_output_dir": "/UD/Pmogo.com.hk"
 }

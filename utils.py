@@ -6,9 +6,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import zipfile
 import logging
+from ftplib import FTP
+import wget
 
 import pandas as pd
-import wget
 
 def dict_to_dataFrame(dict_object):
     data_df = pd.DataFrame.from_dict(dict_object, orient='index').T
@@ -16,7 +17,7 @@ def dict_to_dataFrame(dict_object):
 
 def dataFrame_to_csv(df, output_dir, csv_name):
     os.makedirs(output_dir, exist_ok=True)
-    df.to_csv(f'{output_dir}/{csv_name}', index=True)
+    df.to_csv(f'{output_dir}/{csv_name}', index=True, encoding="utf-8-sig")
     return csv_name
 
 def add_columns_between_two_dataFrames(original_dataFrame, column_name_array):
@@ -75,7 +76,7 @@ def send_email(subject, body, sender_email, receiver_email, email_password, stmp
 
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(stmp, stmp_port, context=context, timeout=3000) as server:
+    with smtplib.SMTP_SSL(stmp, stmp_port, context=context, timeout=30000) as server:
         server.login(sender_email, email_password)
         server.sendmail(sender_email, receiver_email, text)
 
@@ -98,3 +99,17 @@ def create_logger(log_folder, filename, dir_path):
     my_logger.addHandler(consoleHandler)
 
     return my_logger
+
+def send_ftp(host, user, password, inputFile, output_dir):
+    ftp=FTP()
+    ftp.connect(host)
+    ftp.login(user,password)
+    ftp.cwd(output_dir)
+    fileObject = open(inputFile, "rb")
+    baseName = os.path.basename(inputFile)
+    filename = os.path.splitext(baseName)[0]
+    file2BeSavedAs = filename
+    ftpCommand = f'STOR {file2BeSavedAs}'
+    ftpResponseMessage = ftp.storbinary(ftpCommand, fp=fileObject)
+    print(ftpResponseMessage)
+    ftp.close()
