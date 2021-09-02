@@ -192,7 +192,7 @@ def main(args, logger):
 
     while True:
         schedule.run_pending()
-        time.sleep(9)
+        time.sleep(60)
 
 def _get_parser():
     parser = argparse.ArgumentParser(description='Automate data grabber from HKTVmall mms portal')
