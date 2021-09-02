@@ -74,13 +74,16 @@ def get_data_by_api(api_name, url, access_token, payload):
         return df
 
 def get_public_sales_data(args, access_token, output_dir, save_filename, dl_filename, zip_files):
+    td = datetime.date.today()
+    ytd = td - datetime.timedelta(days=1)
     """Get public sales data"""
     file_path = Path(f'{output_dir}/Public_Transaction_{save_filename}.csv')
     if file_path.is_file():
         logger.info(f'Public_Transaction has already existed')
         zip_files.append(f'{output_dir}/Public_Transaction_{save_filename}.csv')
     else:
-        public_sales_link = public_sales_api(args['url'], access_token, "2021-06-23", "2021-06-24")  # ytd.strftime("%Y-%m-%d"), td.strftime("%Y-%m-%d")
+        #public_sales_link = public_sales_api(args['url'], access_token, "2021-06-23", "2021-06-24")  # ytd.strftime("%Y-%m-%d"), td.strftime("%Y-%m-%d")
+        public_sales_link = public_sales_api(args['url'], access_token, ytd.strftime("%Y-%m-%d"), td.strftime("%Y-%m-%d"))  # , 
         if public_sales_link:
             csv_gz_path = download_by_url(public_sales_link, output_dir, f'{dl_filename}.gz')
             if csv_gz_path:
