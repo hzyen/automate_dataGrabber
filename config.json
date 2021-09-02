@@ -1,14 +1,14 @@
 {
     "username": "is@doubleh.com.hk",
-    "password": "Qwer5678",
+    "password": "Abcd1234",
     "merchant_code": "034875fe-508e-4a4b-8cca-b713321fb182",
     "store_code": ["H6842001"],
     "issac_username": "issac@terminus.com.hk",
-    "issac_password": "Abcd8888",
+    "issac_password": "Qwer5678",
     "issac_merchant_code": "1adc7045-9674-4356-9248-3d0757eae7cd",
     "issac_store_code": ["H8605001"],
     "is_username": "is@doubleh.com.hk",
-    "is_password": "Qwer5678",
+    "is_password": "Abcd1234",
     "is_merchant_code": "034875fe-508e-4a4b-8cca-b713321fb182",
     "is_store_code": ["H6842001", "H3720001"],
     "url": "https://opendatabank-apigw.hktvmall.com",
@@ -22,7 +22,8 @@
     "stmp": "smtp.exmail.qq.com",
     "stmp_port": 465,
     "ftp_host": "d.wal.ltd",
-    "ftp_user": "UD",
+    "ftp_username": "UD",
     "ftp_password": "U678D876",
-    "ftp_output_dir": "/UD/Pmogo.com.hk"
+    "ftp_output_dir": "/UD/HKTVmall mms data",
+    "timezone": "Asia/Hong_Kong"
 }
