@@ -13,7 +13,7 @@
     "is_store_code": ["H6842001", "H3720001"],
     "url": "https://opendatabank-apigw.hktvmall.com",
     "output_dir": "./data",
-    "log_dir": "./logger/logs",
+    "log_dir": "./log",
     "subject": "[Auto] Daily report from HKTVmall mms portal data grabber",
     "body": "This is an automate email sent from Terminus server",
     "sender_email": "michael@terminus.com.hk",

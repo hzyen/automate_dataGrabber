@@ -112,6 +112,9 @@ def scraper(args, logger):
 
     td = datetime.date.today()
     ytd = td - datetime.timedelta(days=1)
+
+    logger.info(f'-------------------------------------------------------------------------')
+    logger.info(f'Start program')
     
     dl_filename = f'Public_Transaction_{ytd.strftime("%d%m%Y")}_{td.strftime("%d%m%Y")}.csv'
     save_filename = f'{ytd.strftime("%d%m%Y")}_{td.strftime("%d%m%Y")}'
@@ -185,12 +188,11 @@ def scraper(args, logger):
         logger.info(f'Finished. Total time: {end_time-start_time}')
 
 def main(args, logger):
-    #schedule.every().day.at("17:26").do(scraper, args=args, logger=logger)
+    schedule.every().day.at("09:00").do(scraper, args=args, logger=logger)
 
-    #while True:
-    #    schedule.run_pending()
-    #    time.sleep(9)
-    scraper(args, logger)
+    while True:
+        schedule.run_pending()
+        time.sleep(9)
 
 def _get_parser():
     parser = argparse.ArgumentParser(description='Automate data grabber from HKTVmall mms portal')
