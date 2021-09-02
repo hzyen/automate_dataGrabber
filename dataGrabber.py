@@ -209,7 +209,6 @@ if __name__ == "__main__":
     """logger set up"""
     log_dir = config['log_dir']
     log_filename = "{:%Y-%m-%d}".format(datetime.datetime.now()) + '.log'
-    log_folder = 'autoDataGrabber'
-    logger = create_logger(log_folder, log_filename, log_dir)
+    logger = create_logger(log_filename, log_dir)
 
     main(config, logger)

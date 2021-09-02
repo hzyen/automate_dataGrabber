@@ -80,16 +80,16 @@ def send_email(subject, body, sender_email, receiver_email, email_password, stmp
         server.login(sender_email, email_password)
         server.sendmail(sender_email, receiver_email, text)
 
-def create_logger(log_folder, filename, dir_path):
+def create_logger(filename, dir_path):
     logging.captureWarnings(True) #capture python warning message
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
     my_logger = logging.getLogger('py.warnings') # capture python warning message
     my_logger.setLevel(logging.INFO)
 
-    if not os.path.exists(dir_path + '/' + log_folder):
-        os.makedirs(dir_path + '/' + log_folder)
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
 
-    fileHandler = logging.FileHandler(dir_path + '/' + log_folder + '/' + filename, 'w', 'utf-8')
+    fileHandler = logging.FileHandler(dir_path + '/' + filename, 'w', 'utf-8')
     fileHandler.setFormatter(formatter)
     my_logger.addHandler(fileHandler)
 
