@@ -1,2 +1,4 @@
 pandas
 wget
+request
+schedule

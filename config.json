@@ -22,8 +22,8 @@
     "stmp": "smtp.exmail.qq.com",
     "stmp_port": 465,
     "ftp_host": "d.wal.ltd",
-    "ftp_username": "UD",
-    "ftp_password": "U678D876",
-    "ftp_output_dir": "/UD/HKTVmall mms data",
+    "ftp_username": "ling.chu",
+    "ftp_password": "Qwer5678",
+    "ftp_output_dir": "/Ling.chu/HKTVmall mms",
     "timezone": "Asia/Hong_Kong"
 }

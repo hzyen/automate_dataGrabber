@@ -67,7 +67,7 @@ def get_data_by_api(api_name, url, access_token, payload):
 
     if response.status_code == 200:
         logger.info(f'get {api_name} data successfully')
-        df = pd.read_json(StringIO(response.text), lines=True, nrows=10)
+        df = pd.read_json(StringIO(response.text), lines=True)
         return df
     else:
         logger.error(f'get {api_name} data failed. response code: {response.status_code}')
