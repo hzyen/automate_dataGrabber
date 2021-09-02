@@ -5,8 +5,8 @@ An automate data grabber using Python
 `python ./dataGrabber.py --config {config file path}`
 
 ## config file  
-
-{
+```
+{  
     "username": "",
     "password": "",
     "merchant_code": "",
@@ -35,3 +35,4 @@ An automate data grabber using Python
     "ftp_output_dir": "",
     "timezone": "Asia/Hong_Kong"
 }
+```
