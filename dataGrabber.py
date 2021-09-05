@@ -135,27 +135,27 @@ def scraper(args, logger):
 
     access_token = retrieve_access_token(logger, 'password', username, password)
     if access_token:
-        #zip_files = get_public_sales_data(args, access_token, output_dir, save_filename, dl_filename, zip_files)
+        zip_files = get_public_sales_data(args, access_token, output_dir, save_filename, dl_filename, zip_files)
         # Get merchant user data
-        #zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantUser', access_token=access_token, api_name='Merchant_User', output_dir=output_dir, save_filename=save_filename, zip_files=zip_files)
+        zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantUser', access_token=access_token, api_name='Merchant_User', output_dir=output_dir, save_filename=save_filename, zip_files=zip_files)
         # Get Merchant Product
-        #zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantProduct', access_token=access_token, api_name='Merchant_Product', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
+        zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantProduct', access_token=access_token, api_name='Merchant_Product', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
         # Get Merchant Transaction
-        #zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantSaleTransactionSimplified', access_token=access_token, api_name='Merchant_Sale_Transaction_Simplified', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
+        zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantSaleTransactionSimplified', access_token=access_token, api_name='Merchant_Sale_Transaction_Simplified', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
         # Get Merchant Wishlistjd
-        #zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantWishlistItem', access_token=access_token, api_name='Merchant_WishlistItem', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)        
+        zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantWishlistItem', access_token=access_token, api_name='Merchant_WishlistItem', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)        
         # Get Merchant Shared Shopping Carts
-        #zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantSharedCartEntry', access_token=access_token, api_name='Merchant_SharedCartEntry', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
+        zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantSharedCartEntry', access_token=access_token, api_name='Merchant_SharedCartEntry', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
         # Get Merchant Online Stores
         zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantOnlineStore', access_token=access_token, api_name='Merchant_OnlineStore', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
         # Get merchant website and app traffic product data
-        #payload['date'] = ytd.strftime("%Y-%m-%d")
-        #zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantTrafficProduct', access_token=access_token, api_name='Merchant_Website_And_App_Traffic_Product', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
-        #del payload['date']
+        payload['date'] = ytd.strftime("%Y-%m-%d")
+        zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantTrafficProduct', access_token=access_token, api_name='Merchant_Website_And_App_Traffic_Product', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
+        del payload['date']
         # Get merchant website and app traffic product list data
-        #payload['date'] = ytd.strftime("%Y-%m-%d")
-        #zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantTrafficProductList', access_token=access_token, api_name='Merchant_Website_And_App_Traffic_ProductList', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
-        #del payload['date']
+        payload['date'] = ytd.strftime("%Y-%m-%d")
+        zip_files = get_general_data(payload, url=args['url'] + '/gw/api/v1/MerchantTrafficProductList', access_token=access_token, api_name='Merchant_Website_And_App_Traffic_ProductList', output_dir=output_dir, save_filename=save_filename_1, zip_files=zip_files)
+        del payload['date']
 
         # Zip files
         zip_file_path = Path(f'{zipFile_dir}')
@@ -168,7 +168,7 @@ def scraper(args, logger):
         # Remove files
         for i, file in enumerate(zip_files):
             os.remove(file)
-        #os.remove(f'{output_dir}/{dl_filename}.gz')
+        os.remove(f'{output_dir}/{dl_filename}.gz')
         
 
         # send via ftp
