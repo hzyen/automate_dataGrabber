@@ -188,6 +188,7 @@ def scraper(args, logger):
         logger.info(f'Finished. Total time: {end_time-start_time}')
 
 def main(args, logger):
+    logger.info(f'Program start')
     schedule.every().day.at("09:00").do(scraper, args=args, logger=logger)
     #schedule.every(40).minutes.do(scraper, args=args, logger=logger)
 
