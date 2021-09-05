@@ -189,11 +189,12 @@ def scraper(args, logger):
 
 def main(args, logger):
     #schedule.every().day.at("09:00").do(scraper, args=args, logger=logger)
+    schedule.every(40).minutes.do(scraper, args=args, logger=logger)
 
-    #while True:
-    #    schedule.run_pending()
-    #    time.sleep(60)
-    scraper(args,logger)
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+    #scraper(args,logger)
 
 def _get_parser():
     parser = argparse.ArgumentParser(description='Automate data grabber from HKTVmall mms portal')
