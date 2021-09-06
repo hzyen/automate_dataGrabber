@@ -168,7 +168,9 @@ def scraper(args, logger):
         # Remove files
         for i, file in enumerate(zip_files):
             os.remove(file)
-        os.remove(f'{output_dir}/{dl_filename}.gz')
+        file_path = Path(f'{output_dir}/{dl_filename}.gz')
+        if file_path.is_file():
+            os.remove(f'{output_dir}/{dl_filename}.gz')
         
 
         # send via ftp
@@ -189,13 +191,13 @@ def scraper(args, logger):
 
 def main(args, logger):
     logger.info(f'Program start')
-    schedule.every().day.at("09:00").do(scraper, args=args, logger=logger)
+    #schedule.every().day.at("09:00").do(scraper, args=args, logger=logger)
     #schedule.every(40).minutes.do(scraper, args=args, logger=logger)
 
-    while True:
-        schedule.run_pending()
-        time.sleep(60)
-    #scraper(args,logger)
+    #while True:
+    #    schedule.run_pending()
+    #    time.sleep(60)
+    scraper(args,logger)
 
 def _get_parser():
     parser = argparse.ArgumentParser(description='Automate data grabber from HKTVmall mms portal')
