@@ -102,6 +102,7 @@ def create_logger(filename, dir_path):
 
 def send_ftp(host, user, password, inputFile, output_dir):
     ftp=FTP()
+    ftp.set_debuglevel(2)
     ftp.connect(host)
     ftp.login(user,password)
     ftp.cwd(output_dir)
