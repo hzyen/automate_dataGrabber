@@ -101,8 +101,8 @@ def create_logger(filename, dir_path):
     return my_logger
 
 def send_ftp(host, user, password, inputFile, output_dir):
-    ftp=FTP()
-    ftp.set_debuglevel(2)
+    ftp=FTP(timeout=3600)
+    #ftp.set_debuglevel(2)
     ftp.connect(host)
     ftp.login(user,password)
     ftp.cwd(output_dir)
@@ -114,3 +114,13 @@ def send_ftp(host, user, password, inputFile, output_dir):
     ftpResponseMessage = ftp.storbinary(ftpCommand, fp=fileObject)
     print(ftpResponseMessage)
     ftp.close()
+
+# def send_ftp2(host, user, password, inputFile, output_dir):
+#     ftp=FTP()
+#     ftp.connect(host)
+#     ftp.login(user,password)
+#     ftp.cwd(output_dir)
+#     sock = ftp.transfercmd('STOR ' + inputFile)
+#     def background():
+#         f = open(…)
+#         while True:
